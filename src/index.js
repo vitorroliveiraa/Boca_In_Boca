@@ -93,8 +93,36 @@ app.patch("/users/:id", VerifyUserExist, (request, response) => {
     );
 });
 
-app.delete("/users/:id", (request, response) => {
-    
+// Adiciona o endereço do usuário
+app.post("/insert_address/:id", VerifyUserExist, (request, response) => {
+    const { user } = request;
+    const {
+        street,
+        number,
+        district,
+        city,
+        state,
+        zipCode
+    } = request.body;
+ 
+    const registedAddress = {
+        street: street,
+        number: number,
+        district: district,
+        city: city,
+        state: state,
+        zipCode: zipCode
+    }
+
+    user.address.push(registedAddress);
+
+    return response.status(200).json(
+        {success: "Address successfully added!"}
+    );
+});
+
+app.delete("/users/:id", VerifyUserExist, (request, response) => {
+
 });
 
 app.listen(port, () => {
