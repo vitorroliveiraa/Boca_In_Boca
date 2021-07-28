@@ -1,3 +1,4 @@
+const { response } = require("express");
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 
@@ -7,10 +8,28 @@ app.use(express.json());
 const port = 3333;
 const users = [];
 
+function VerifyUserExist(request, response, next) {
+    const { id } = request.params;
+
+    const user = users.find((user) => user.id === id);
+
+    if (!user) {
+        return response.status(404).json(
+            { error: "User not found!" }
+        );
+    }
+
+    request.user = user;
+
+    return next();
+}
+
+// Retorna todos os usuários
 app.get("/users", (request, response) => {
     return response.json(users);
 });
 
+// Cadastra um usuário
 app.post("/users", (request, response) => {
     const {
         username,
@@ -46,6 +65,36 @@ app.post("/users", (request, response) => {
     return response.status(201).json(
         { success: "User created successfully!" }
     );
+});
+
+// Altera dados do usuário, exceto endereço
+app.put("/users/:id", VerifyUserExist, (request, response) => {
+    const { name, email, phone } = request.body;
+    const { user } = request;
+
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+
+    return response.status(200).json(
+        { success: "User changed successfully!" }
+    );
+});
+
+// Altera username do usuário
+app.patch("/users/:id", VerifyUserExist, (request, response) => {
+    const { username } = request.body;
+    const { user } = request;
+
+    user.username = username;
+
+    return response.status(200).json(
+        { success: "Username changed successfully!" }
+    );
+});
+
+app.delete("/users/:id", (request, response) => {
+    
 });
 
 app.listen(port, () => {
