@@ -1,8 +1,10 @@
 const express = require("express");
-const app = express();
-const { v4: uuid } = require("uuid");
-const port = 3333;
+const { v4: uuidv4 } = require("uuid");
 
+const app = express();
+app.use(express.json());
+
+const port = 3333;
 const users = [];
 
 app.get("/users", (request, response) => {
