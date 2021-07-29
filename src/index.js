@@ -104,7 +104,7 @@ app.post("/insert_address/:id", VerifyUserExist, (request, response) => {
         state,
         zipCode
     } = request.body;
- 
+
     const registedAddress = {
         street: street,
         number: number,
@@ -117,12 +117,27 @@ app.post("/insert_address/:id", VerifyUserExist, (request, response) => {
     user.address.push(registedAddress);
 
     return response.status(200).json(
-        {success: "Address successfully added!"}
+        { success: "Address successfully added!" }
     );
 });
 
-app.delete("/users/:id", VerifyUserExist, (request, response) => {
+app.delete("/delete_user/:id", VerifyUserExist, (request, response) => {
+    const { user } = request;
+    const { id } = request.params;
 
+    const userIndex = users.findIndex((user) => user.id === id);
+
+    if (userIndex === -1) {
+        return response.status(404).json(
+            { error: "User not found!" }
+        );
+    }
+
+    users.splice(userIndex, 1);
+
+    return response.status(200).json(
+        { success: "Deleted user!" }
+    );
 });
 
 app.listen(port, () => {
