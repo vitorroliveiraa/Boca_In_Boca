@@ -121,6 +121,7 @@ app.post("/insert_address/:id", VerifyUserExist, (request, response) => {
     );
 });
 
+//Excluir o usuário
 app.delete("/delete_user/:id", VerifyUserExist, (request, response) => {
     const { user } = request;
     const { id } = request.params;
